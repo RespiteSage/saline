@@ -17,7 +17,7 @@
 #       whether it is a `Number` type.
 struct Saturating(T)
   # The `Number` value represented by this `Saturating(T)`
-  private getter value : T
+  getter value : T
 
   # Create a new `Saturating(T)` with the given *value*.
   def initialize(@value : T)
