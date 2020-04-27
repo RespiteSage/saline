@@ -1,0 +1,9 @@
+name: saline
+version: 0.1.0
+
+authors:
+  - Benjamin Wade
+
+crystal: 0.34.0
+
+license: MIT
