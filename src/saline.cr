@@ -1,3 +1,5 @@
+require "./saline/*"
+
 # TODO: Write documentation for `Saline`
 module Saline
   VERSION = "0.1.0"
