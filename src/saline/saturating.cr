@@ -16,6 +16,9 @@
 #       unexpected behavior, `T` is checked at compile-time to determine
 #       whether it is a `Number` type.
 struct Saturating(T)
+  include Comparable(T)
+  include Comparable(Saturating(T))
+
   # The `Number` value represented by this `Saturating(T)`
   getter value : T
 
@@ -87,6 +90,14 @@ struct Saturating(T)
   # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
   def *(other : Saturating(T)) : Saturating(T)
     self * other.value
+  end
+
+  def <=>(other : Saturating(T))
+    self.value <=> other.value
+  end
+
+  def <=>(other : Number)
+    self.value <=> other
   end
 
   forward_missing_to value
