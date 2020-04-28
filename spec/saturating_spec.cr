@@ -9,7 +9,10 @@ describe Saturating do
     end
 
     it "disallows non-`Number` types" do
-      # TODO
+      assert_error(
+        "compiler/saturating_only_numbers.cr",
+        "The generic type of Saturating must be a Number type!"
+      )
     end
   end
 
