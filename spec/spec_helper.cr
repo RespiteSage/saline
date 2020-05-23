@@ -1,6 +1,8 @@
 require "spec"
 require "../src/saline"
 
+include Saline
+
 # Asserts compile time errors given a *path* to a program and a *message*.
 #
 # This was copied straight from the spec_helper in
