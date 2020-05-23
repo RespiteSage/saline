@@ -7,10 +7,11 @@ module Saline
   # this concept with an Int32.
   #
   # ```crystal
-  # n = Saturating(Int32).new(Int32::MAX)
-  # n += 1 # => 2147483647 (Int32::MAX)
-  # n = Saturating(Int32).new(Int32::MIN)
-  # n -= 1 # => -2147483648 (Int32::MIN)
+  # n = Saturating(Int32).new(Int32::MAX - 2)
+  # n += 20 # => 2147483647 (Int32::MAX)
+
+  # m = Saturating(Int32).new(Int32::MIN + 3)
+  # m -= 30 # => -2147483648 (Int32::MIN)
   # ```
   #
   # Note: This class will only work with `Number` types. In order to avoid
