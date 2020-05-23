@@ -20,11 +20,11 @@ m -= 30 # => -2147483648 (Int32::MIN)
 
 ## Development
 
-This shard currently uses an initial pure-Crystal approach. While I want to
-keep that approach around, saturating arithmetic is implemented already in
-LLVM, which undergirds Crystal. I'd like to have create bindings to
-[these functions](https://llvm.org/docs/LangRef.html#saturation-arithmetic-intrinsics)
-eventually, with the ability to use each implementation as desired.
+This shard currently uses an initial pure-Crystal approach. However, saturating
+arithmetic is implemented already in LLVM, which undergirds Crystal. I'd like
+to have create bindings to [these functions](https://llvm.org/docs/LangRef.html#saturation-arithmetic-intrinsics)
+eventually, replacing the current implementation but keeping the same
+interface.
 
 ## Contributing
 
