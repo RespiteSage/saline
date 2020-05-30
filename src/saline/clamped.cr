@@ -1,3 +1,5 @@
+require "./saturating"
+
 module Saline
   # # A `Clamped` `Number` clamps to given minimum and maximum values.
   #
