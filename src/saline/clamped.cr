@@ -46,6 +46,7 @@ module Saline
       @_value = Saturating(T).new L if @_value < L
     end
 
+    # :ditto:
     def self.new(value : T)
       {% unless T < Number %}
         {% raise "The generic type of Clamped must be a Number type!" %}
@@ -53,6 +54,7 @@ module Saline
       new Saturating(T).new(value)
     end
 
+    # Get the `Number` value represented by this `Clamped(T, L, U)`
     def value
       @_value.value
     end
