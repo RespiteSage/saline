@@ -20,10 +20,10 @@ module Saline
     include Comparable(Clamped(T, L, U))
 
     # The `Number` value represented by this `Clamped(T, L, U)`
-    getter value : T
+    private getter _value : Saturating(T)
 
     # Create a new `Clamped(T, L, U)` with the given *value*.
-    def initialize(@value : T)
+    def initialize(value : Saturating(T))
       {% unless T < Number %}
         {% raise "The generic type of Clamped must be a Number type!" %}
       {% end %}
@@ -37,7 +37,22 @@ module Saline
         {% raise "The generic upper bound of Clamped must not be less than its generic lower bound!" %}
       {% end %}
 
-      # TODO: check initial value
+      @_value = value
+
+      @_value = Saturating(T).new U if @_value > U
+
+      @_value = Saturating(T).new L if @_value < L
+    end
+
+    def self.new(value : T)
+      {% unless T < Number %}
+        {% raise "The generic type of Clamped must be a Number type!" %}
+      {% end %}
+      new Saturating(T).new(value)
+    end
+
+    def value
+      @_value.value
     end
 
     # Returns the result of adding `self` and *other*.
@@ -46,13 +61,9 @@ module Saline
       if other < 0
         self - (-other)
       else
-        begin
-          if (new_value = value + other) <= U
-            Clamped(T, L, U).new(new_value)
-          else
-            Clamped(T, L, U).new(U)
-          end
-        rescue OverflowError
+        if (new_value = value + other) <= U
+          Clamped(T, L, U).new(new_value)
+        else
           Clamped(T, L, U).new(U)
         end
       end
@@ -64,13 +75,9 @@ module Saline
       if other < 0
         self + (-other)
       else
-        begin
-          if (new_value = value - other) >= L
-            Clamped(T, L, U).new(new_value)
-          else
-            Clamped(T, L, U).new(L)
-          end
-        rescue OverflowError
+        if (new_value = value - other) >= L
+          Clamped(T, L, U).new(new_value)
+        else
           Clamped(T, L, U).new(L)
         end
       end
@@ -79,20 +86,12 @@ module Saline
     # Returns the result of multiplying `self` and *other*.
     # Returns `U` or `L` (as appropriate) in case of overflow.
     def *(other : T) : Clamped(T, L, U)
-      begin
-        if (new_value = self.value * other) > U
-          Clamped(T, L, U).new(U)
-        elsif new_value < L
-          Clamped(T, L, U).new(L)
-        else
-          Clamped(T, L, U).new(new_value)
-        end
-      rescue OverflowError
-        if (value < 0) ^ (other < 0) # true if negative product, otherwise false
-          Clamped(T, L, U).new(L)
-        else
-          Clamped(T, L, U).new(U)
-        end
+      if (new_value = self.value * other) > U
+        Clamped(T, L, U).new(U)
+      elsif new_value < L
+        Clamped(T, L, U).new(L)
+      else
+        Clamped(T, L, U).new(new_value)
       end
     end
 
