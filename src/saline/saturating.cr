@@ -6,7 +6,7 @@ module Saline
   # `Number` type's minimum and maximum. The code snippet below demonstrates
   # this concept with an Int32.
   #
-  # ```crystal
+  # ```
   # n = Saturating(Int32).new(Int32::MAX - 2)
   # n += 20 # => 2147483647 (Int32::MAX)
 

@@ -7,7 +7,7 @@ module Saline
   # bound `L` and upper bound `U`. The code snippet below demonstrates
   # this concept with an Int32.
   #
-  # ```crystal
+  # ```
   # n = Clamped(Int32, 2, 11).new(7)
   # n += 5 # => 11
   # n = Clamped(Int32, 2, 11).new(7)
