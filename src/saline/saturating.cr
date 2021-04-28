@@ -34,63 +34,57 @@ module Saline
     # Returns the result of adding `self` and *other*.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
     def +(other : Number) : Saturating(T)
-      if other < 0
-        self - (-other)
+      new_value = value + other
+      Saturating(T).new(new_value)
+    rescue OverflowError
+      if other > 0
+        Saturating(T).new(T::MAX)
       else
-        begin
-          new_value = value + other
-          Saturating(T).new(new_value)
-        rescue OverflowError
-          Saturating(T).new(T::MAX)
-        end
+        Saturating(T).new(T::MIN)
       end
     end
 
     # Returns the result of subtracting *other* from `self`.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
     def -(other : Number) : Saturating(T)
-      if other < 0
-        self + (-other)
+      new_value = value - other
+      Saturating(T).new(new_value)
+    rescue OverflowError
+      if other > 0
+        Saturating(T).new(T::MIN)
       else
-        begin
-          new_value = value - other
-          Saturating(T).new(new_value)
-        rescue OverflowError
-          Saturating(T).new(T::MIN)
-        end
+        Saturating(T).new(T::MAX)
       end
     end
 
     # Returns the result of multiplying `self` and *other*.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
-    def *(other : T) : Saturating(T)
-      begin
-        new_value = value * other
-        Saturating.new(new_value)
-      rescue OverflowError
-        if (value < 0) ^ (other < 0) # this does cancelling of negative signs
-          Saturating(T).new(T::MIN)
-        else
-          Saturating(T).new(T::MAX)
-        end
+    def *(other : Number) : Saturating(T)
+      new_value = value * other
+      Saturating(T).new(new_value)
+    rescue OverflowError
+      if (value < 0) ^ (other < 0) # this does cancelling of negative signs
+        Saturating(T).new(T::MIN)
+      else
+        Saturating(T).new(T::MAX)
       end
     end
 
     # Returns the result of adding `self` and *other*.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
-    def +(other : Saturating(T)) : Saturating(T)
+    def +(other : Saturating) : Saturating(T)
       self + other.value
     end
 
     # Returns the result of subtracting *other* from `self`.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
-    def -(other : Saturating(T)) : Saturating(T)
+    def -(other : Saturating) : Saturating(T)
       self - other.value
     end
 
     # Returns the result of multiplying `self` and *other*.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
-    def *(other : Saturating(T)) : Saturating(T)
+    def *(other : Saturating) : Saturating(T)
       self * other.value
     end
 
@@ -101,7 +95,5 @@ module Saline
     def <=>(other : Number)
       self.value <=> other
     end
-
-    forward_missing_to value
   end
 end
