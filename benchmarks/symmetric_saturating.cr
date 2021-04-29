@@ -4,9 +4,10 @@ require "../src/saline.cr"
 include Saline
 
 fake_val = 0
-Benchmark.ips do |x|
-  {% begin %}
-    {% for type in {Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64} %}
+{% begin %}
+  {% for type in {Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64} %}
+    puts "{{type}}"
+    Benchmark.ips do |x|
       x.report("Saturating({{type}}) + Saturating({{type}}), no saturation") do
         first_{{type}} = Saturating({{type}}).new(1)
         second_{{type}} = Saturating({{type}}).new(2)
@@ -42,6 +43,7 @@ Benchmark.ips do |x|
         second_{{type}} = Saturating({{type}}).new({{type}}::MAX - 1)
         fake_val = first_{{type}} * second_{{type}}
       end
-    {% end %}
+    end
+    puts ""
   {% end %}
-end
+{% end %}

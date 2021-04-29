@@ -4,10 +4,11 @@ require "../src/saline.cr"
 include Saline
 
 fake_val = 0
-Benchmark.ips do |x|
-  {% begin %}
-    {% for first_type in {Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64} %}
-      {% for second_type in ([Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64].reject { |type| type == first_type }) %}
+{% begin %}
+  {% for first_type in {Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64} %}
+    {% for second_type in ([Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64].reject { |type| type == first_type }) %}
+      puts "{{first_type}} and {{second_type}}"
+      Benchmark.ips do |x|
         x.report("Saturating({{first_type}}) + Saturating({{second_type}}), no saturation") do
           val_{{first_type}} = Saturating({{first_type}}).new(1)
           val_{{second_type}} = Saturating({{second_type}}).new(2)
@@ -43,7 +44,8 @@ Benchmark.ips do |x|
           val_{{second_type}} = Saturating({{second_type}}).new({{second_type}}::MAX - 1)
           fake_val = val_{{first_type}} * val_{{second_type}}
         end
-      {% end %}
+      end
+      puts ""
     {% end %}
   {% end %}
-end
+{% end %}
