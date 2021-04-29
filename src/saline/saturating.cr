@@ -1,5 +1,3 @@
-require "../llvm/lib_saturating"
-
 module Saline
   # A `Saturating` `Number` clamps to its maximum or minimum values instead of
   # overflowing.
@@ -109,4 +107,4 @@ module Saline
 end
 
 # add type-specific methods
-require "./saturating_sint"
+require "./saturating_ops"
