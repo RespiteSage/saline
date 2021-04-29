@@ -1,9 +1,14 @@
 name: saline
-version: 0.1.1
+version: 0.1.2
+crystal: 0.34.0
+
+license: MIT
 
 authors:
   - Benjamin Wade
 
-crystal: 0.34.0
-
-license: MIT
+targets:
+  symmetric_saturating_benchmark:
+    main: benchmarks/symmetric_saturating.cr
+  asymmetric_saturating_benchmark:
+    main: benchmarks/asymmetric_saturating.cr
