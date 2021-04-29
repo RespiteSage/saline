@@ -1,3 +1,5 @@
+require "../llvm/lib_saturating"
+
 module Saline
   # A `Saturating` `Number` clamps to its maximum or minimum values instead of
   # overflowing.
@@ -34,6 +36,10 @@ module Saline
     # Returns the result of adding `self` and *other*.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
     def +(other : Number) : Saturating(T)
+      default_plus other
+    end
+
+    private def default_plus(other : Number) : Saturating(T)
       new_value = value + other
       Saturating(T).new(new_value)
     rescue OverflowError
@@ -47,6 +53,10 @@ module Saline
     # Returns the result of subtracting *other* from `self`.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
     def -(other : Number) : Saturating(T)
+      default_minus other
+    end
+
+    private def default_minus(other : Number) : Saturating(T)
       new_value = value - other
       Saturating(T).new(new_value)
     rescue OverflowError
@@ -97,3 +107,6 @@ module Saline
     end
   end
 end
+
+# add type-specific methods
+require "./saturating_sint"
