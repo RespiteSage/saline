@@ -35,7 +35,7 @@ fake_val = 0
 
         x.report("Saturating({{first_type}}) - Saturating({{second_type}}), with saturation") do
           val_{{first_type}} = Saturating({{first_type}}).new({{first_type}}::MIN + 1)
-          val_{{second_type}} = Saturating({{second_type}}).new(2)
+          val_{{second_type}} = Saturating({{second_type}}).new({{second_type}}::MAX)
           fake_val = val_{{first_type}} - val_{{second_type}}
         end
 
