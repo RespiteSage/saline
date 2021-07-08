@@ -11,8 +11,14 @@ module Saline
         {% for bit_width in [8, 16, 32, 64] %}
             {% compatible_bit_length = (type_base == "Int") ? bit_width - 1 : bit_width %}
             {% if T.stringify == "#{type_base.id}#{bit_width}" %}
-              if (other.bit_length <= {{compatible_bit_length}})
+              if other.bit_length <= {{compatible_bit_length}}
                 Saturating({{type_base.id}}{{bit_width}}).new LLVM::LibSaturating.{{sign_char.id}}add_{{bit_width}}(value, other.to_{{sign_char.id}}{{bit_width}})
+              elsif other.bit_length > {{bit_width}}
+                if other > 0
+                  return Saturating(T).new T::MAX
+                else
+                  return Saturating(T).new T::MIN
+                end
               else
                 default_plus other
               end
@@ -33,8 +39,14 @@ module Saline
         {% for bit_width in [8, 16, 32, 64] %}
             {% compatible_bit_length = (type_base == "Int") ? bit_width - 1 : bit_width %}
             {% if T.stringify == "#{type_base.id}#{bit_width}" %}
-              if (other.bit_length <= {{compatible_bit_length}})
+              if other.bit_length <= {{compatible_bit_length}}
                 Saturating({{type_base.id}}{{bit_width}}).new LLVM::LibSaturating.{{sign_char.id}}sub_{{bit_width}}(value, other.to_{{sign_char.id}}{{bit_width}})
+              elsif other.bit_length > {{bit_width}}
+                if other > 0
+                  return Saturating(T).new T::MIN
+                else
+                  return Saturating(T).new T::MAX
+                end
               else
                 default_minus other
               end
