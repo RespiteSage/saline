@@ -68,13 +68,15 @@ module Saline
     # Returns the result of multiplying `self` and *other*.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
     def *(other : Number) : Saturating(T)
-      new_value = value * other
-      Saturating(T).new(new_value)
-    rescue OverflowError
-      if (value < 0) ^ (other < 0) # this does cancelling of negative signs
-        Saturating(T).new(T::MIN)
+      if ((-1..1).includes?(other) || (-1..1).includes?(value) || value <= T::MAX // other)
+        new_value = value * other
+        Saturating(T).new(new_value)
       else
-        Saturating(T).new(T::MAX)
+        if (value < 0) ^ (other < 0) # this does cancelling of negative signs
+          Saturating(T).new(T::MIN)
+        else
+          Saturating(T).new(T::MAX)
+        end
       end
     end
 
