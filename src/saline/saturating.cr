@@ -9,7 +9,7 @@ module Saline
   # ```
   # n = Saturating(Int32).new(Int32::MAX - 2)
   # n += 20 # => 2147483647 (Int32::MAX)
-
+  #
   # m = Saturating(Int32).new(Int32::MIN + 3)
   # m -= 30 # => -2147483648 (Int32::MIN)
   # ```
@@ -20,6 +20,7 @@ module Saline
   struct Saturating(T)
     include Comparable(T)
     include Comparable(Saturating(T))
+    include Comparable(Number)
 
     # The `Number` value represented by this `Saturating(T)`
     getter value : T
