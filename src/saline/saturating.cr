@@ -106,6 +106,21 @@ module Saline
     def <=>(other : Number)
       self.value <=> other
     end
+
+    # TODO
+    def saturated?
+      saturated_to_min? || saturated_to_max?
+    end
+
+    # TODO
+    def saturated_to_max?
+      value == T::MAX
+    end
+
+    # TODO
+    def saturated_to_min?
+      value == T::MIN
+    end
   end
 end
 
