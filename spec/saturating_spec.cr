@@ -1,13 +1,11 @@
 require "./spec_helper"
 
+SUPPORTED_INTS          = [Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64]
+SUPPORTED_OPERAND_TYPES = [Int8, Int16, Int32, Int64,
+                           UInt8, UInt16, UInt32, UInt64]
+
 describe Saturating do
   describe ".new" do
-    it "sets the internal value based on the argument" do
-      n = Saturating(Int32).new 7
-
-      n.should eq 7
-    end
-
     it "disallows non-`Number` types" do
       assert_error(
         "compiler/saturating_only_numbers.cr",
@@ -16,114 +14,170 @@ describe Saturating do
     end
   end
 
-  describe "#+" do
-    it "adds a Number normally" do
-      n = Saturating(Int32).new 11
+  {% for generic_type in SUPPORTED_INTS %}
+    describe ".new" do
+      it "sets the {{generic_type}} internal value based on the argument" do
+        n = Saturating({{generic_type}}).new 7
 
-      result = n + 6
-
-      result.should eq 17
+        n.should eq 7
+      end
     end
 
-    it "adds another Saturating normally" do
-      n = Saturating(Int32).new 19
-      m = Saturating(Int32).new 4
+    describe "#+" do
+      it "saturates to {{generic_type}}::MAX when {{generic_type}} would overflow" do
+        n = Saturating.new({{generic_type}}::MAX)
 
-      result = n + m
+        result = n + 8
 
-      result.should eq 23
+        result.should eq {{generic_type}}::MAX
+      end
+
+      it "saturates to {{generic_type}}::MIN when {{generic_type}} would underflow" do
+        n = Saturating.new({{generic_type}}::MIN)
+
+        result = n + -8
+
+        result.should eq {{generic_type}}::MIN
+      end
     end
 
-    # TODO: test Saturating with different generic types
+    describe "#-" do
+      it "saturates to {{generic_type}}::MAX when {{generic_type}} would overflow" do
+        n = Saturating.new({{generic_type}}::MAX)
 
-    it "saturates when generic type would overflow" do
-      n = Saturating(Int32).new 2_000_000_000
+        result = n - -8
 
-      result = n + 200_000_000
+        result.should eq {{generic_type}}::MAX
+      end
 
-      result.should eq Int32::MAX
+      it "saturates to {{generic_type}}::MIN when {{generic_type}} would underflow" do
+        n = Saturating.new({{generic_type}}::MIN)
+
+        result = n - 8
+
+        result.should eq {{generic_type}}::MIN
+      end
     end
 
-    it "saturates when generic type would underflow" do
-      n = Saturating(Int32).new -2_000_000_000
+    describe "#*" do
+      it "saturates to {{generic_type}}::MAX when {{generic_type}} would overflow" do
+        n = Saturating.new({{generic_type}}::MAX)
 
-      result = n + -200_000_000
+        result = n * 2
 
-      result.should eq Int32::MIN
-    end
-  end
+        result.should eq {{generic_type}}::MAX
+      end
 
-  describe "#-" do
-    it "subtracts a Number normally" do
-      n = Saturating(Int32).new 11
+      it "saturates to {{generic_type}}::MIN when {{generic_type}} would underflow" do
+        n = Saturating.new({{generic_type}}::MAX)
 
-      result = n - 4
+        result = n * -2
 
-      result.should eq 7
-    end
-
-    it "subtracts another Saturating normally" do
-      n = Saturating(Int32).new 19
-      m = Saturating(Int32).new 6
-
-      result = n - m
-
-      result.should eq 13
+        result.should eq {{generic_type}}::MIN
+      end
     end
 
-    # TODO: test Saturating with different generic types
+    {% for operand_type in SUPPORTED_OPERAND_TYPES %}
+      describe "#+" do
+        it "adds a {{operand_type}} normally to a Saturating({{generic_type}})" do
+          n = Saturating({{generic_type}}).new 11
 
-    it "saturates when generic type would overflow" do
-      n = Saturating(Int32).new 2_000_000_000
+          result = n + {{operand_type}}.new(6)
 
-      result = n - -200_000_000
+          result.should eq 17
+        end
 
-      result.should eq Int32::MAX
-    end
+        it "adds a Saturating({{operand_type}}) to a Saturating({{generic_type}}) normally" do
+          n = Saturating({{generic_type}}).new 19
+          m = Saturating({{operand_type}}).new 4
 
-    it "saturates when generic type would underflow" do
-      n = Saturating(Int32).new -2_000_000_000
+          result = n + m
 
-      result = n - 200_000_000
+          result.should eq 23
+        end
+      end
 
-      result.should eq Int32::MIN
-    end
-  end
+      describe "#-" do
+        it "subtracts a {{operand_type}} normally from a Saturating({{generic_type}})" do
+          n = Saturating({{generic_type}}).new 11
 
-  describe "#*" do
-    it "multiplies a Number normally" do
-      n = Saturating(Int32).new 2
+          result = n - {{operand_type}}.new(4)
 
-      result = n * 3
+          result.should eq 7
+        end
 
-      result.should eq 6
-    end
+        it "subtracts a Saturating({{operand_type}}) from a  Saturating({{generic_type}}) normally" do
+          n = Saturating({{generic_type}}).new 19
+          m = Saturating({{operand_type}}).new 6
 
-    it "multiplies another Saturating normally" do
-      n = Saturating(Int32).new 5
-      m = Saturating(Int32).new 7
+          result = n - m
 
-      result = n * m
+          result.should eq 13
+        end
+      end
 
-      result.should eq 35
-    end
+      describe "#*" do
+        it "multiplies a Saturating({{generic_type}}) by a {{operand_type}} normally" do
+          n = Saturating({{generic_type}}).new 2
 
-    # TODO: test Saturating with different generic types
+          result = n * {{operand_type}}.new(3)
 
-    it "saturates when generic type would overflow" do
-      n = Saturating(Int32).new 2_000_000_000
+          result.should eq 6
+        end
 
-      result = n * 2
+        it "multiplies a Saturating({{generic_type}}) a Saturating({{operand_type}}) normally" do
+          n = Saturating({{generic_type}}).new 5
+          m = Saturating({{operand_type}}).new 7
 
-      result.should eq Int32::MAX
-    end
+          result = n * m
 
-    it "saturates when generic type would underflow" do
-      n = Saturating(Int32).new 2_000_000_000
+          result.should eq 35
+        end
+      end
 
-      result = n * -2
+      describe "#<=>" do
+        it "returns 0 when a Saturating({{generic_type}}) equals a {{operand_type}}" do
+          n = Saturating({{generic_type}}).new 7
+          m = {{operand_type}}.new 7
 
-      result.should eq Int32::MIN
-    end
-  end
+          (n <=> m).should eq 0
+        end
+
+        it "returns 0 when a Saturating({{generic_type}}) equals a Saturating({{operand_type}})" do
+          n = Saturating({{generic_type}}).new 7
+          m = Saturating({{operand_type}}).new 7
+
+          (n <=> m).should eq 0
+        end
+
+        it "returns 1 when a Saturating({{generic_type}}) is larger compared with a {{operand_type}}" do
+          n = Saturating({{generic_type}}).new 8
+          m = {{operand_type}}.new 7
+
+          (n <=> m).should eq 1
+        end
+
+        it "returns 1 when a Saturating({{generic_type}}) is larger compared with a Saturating({{operand_type}})" do
+          n = Saturating({{generic_type}}).new 8
+          m = Saturating({{operand_type}}).new 7
+
+          (n <=> m).should eq 1
+        end
+
+        it "returns -1 when a Saturating({{generic_type}}) is smaller compared with a {{operand_type}}" do
+          n = Saturating({{generic_type}}).new 7
+          m = {{operand_type}}.new 8
+
+          (n <=> m).should eq -1
+        end
+
+        it "returns -1 when a Saturating({{generic_type}}) is smaller compared with a Saturating({{operand_type}})" do
+          n = Saturating({{generic_type}}).new 7
+          m = Saturating({{operand_type}}).new 8
+
+          (n <=> m).should eq -1
+        end
+      end
+    {% end %}
+  {% end %}
 end

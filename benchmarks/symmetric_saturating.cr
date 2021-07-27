@@ -8,6 +8,24 @@ fake_val = 0
   {% for type in {Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64} %}
     puts "{{type}}"
     Benchmark.ips do |x|
+      x.report("{{type}} + {{type}}, (no overflow)") do
+        first_{{type}} = 1
+        second_{{type}} = 2
+        fake_val = first_{{type}} + second_{{type}}
+      end
+
+      x.report("{{type}} - {{type}}, (no overflow)") do
+        first_{{type}} = 2
+        second_{{type}} = 1
+        fake_val = first_{{type}} - second_{{type}}
+      end
+
+      x.report("{{type}} * {{type}}, (no overflow)") do
+        first_{{type}} = 3
+        second_{{type}} = 2
+        fake_val = first_{{type}} * second_{{type}}
+      end
+
       x.report("Saturating({{type}}) + Saturating({{type}}), no saturation") do
         first_{{type}} = Saturating({{type}}).new(1)
         second_{{type}} = Saturating({{type}}).new(2)
