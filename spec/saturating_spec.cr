@@ -127,5 +127,35 @@ describe Saturating do
         result.should eq {{type}}::MIN
       end
     end
+
+    describe "#<=>" do
+      it "returns 0 when a Saturating({{type}}) equals a {{type}}" do
+        n = Saturating.new({{type}}.new 7)
+        m = {{type}}.new 7
+
+        (n <=> m).should eq 0
+      end
+
+      it "returns 0 when a Saturating({{type}}) equals a Saturating({{type}})" do
+        n = Saturating.new({{type}}.new 7)
+        m = Saturating.new({{type}}.new 7)
+
+        (n <=> m).should eq 0
+      end
+
+      it "returns 1 when a Saturating({{type}}) is larger compared with a {{type}}" do
+        n = Saturating.new({{type}}.new 8)
+        m = {{type}}.new 7
+
+        (n <=> m).should eq 1
+      end
+
+      it "returns -1 when a Saturating({{type}}) is smaller compared with a {{type}}" do
+        n = Saturating.new({{type}}.new 7)
+        m = {{type}}.new 8
+
+        (n <=> m).should eq -1
+      end
+    end
   {% end %}
 end
