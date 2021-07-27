@@ -99,7 +99,7 @@ module Saline
       self * other.value
     end
 
-    def <=>(other : Saturating(T))
+    def <=>(other : Saturating(U)) forall U
       self.value <=> other.value
     end
 
