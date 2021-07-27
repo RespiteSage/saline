@@ -24,10 +24,10 @@ describe Saturating do
     end
 
     describe "#+" do
-      it "adds a Number normally to Saturating({{type}})" do
+      it "adds a {{type}} normally to Saturating({{type}})" do
         n = Saturating.new({{type}}.new 11)
 
-        result = n + 6
+        result = n + {{type}}.new(6)
 
         result.should eq 17
       end
@@ -59,10 +59,10 @@ describe Saturating do
     end
 
     describe "#-" do
-      it "subtracts a Number normally from Saturating({{type}})" do
+      it "subtracts a {{type}} normally from Saturating({{type}})" do
         n = Saturating.new({{type}}.new 11)
 
-        result = n - 4
+        result = n - {{type}}.new(4)
 
         result.should eq 7
       end
@@ -94,15 +94,15 @@ describe Saturating do
     end
 
     describe "#*" do
-      it "multiplies a Number normally" do
+      it "multiplies a {{type}} normally" do
         n = Saturating.new({{type}}.new 2)
 
-        result = n * 3
+        result = n * {{type}}.new(3)
 
         result.should eq 6
       end
 
-      it "multiplies another Saturating normally" do
+      it "multiplies another Saturating({{type}}) normally" do
         n = Saturating.new({{type}}.new 5)
         m = Saturating.new({{type}}.new 7)
 
