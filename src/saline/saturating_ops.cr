@@ -12,6 +12,11 @@ module Saline
             {% compatible_bit_length = (type_base == "Int") ? bit_width - 1 : bit_width %}
             {% if T.stringify == "#{type_base.id}#{bit_width}" %}
               if other.bit_length <= {{compatible_bit_length}}
+                {% if type_base == "UInt" %}
+                  if other < 0
+                    return self - other.abs
+                  end
+                {% end %}
                 Saturating({{type_base.id}}{{bit_width}}).new LLVM::LibSaturating.{{sign_char.id}}add_{{bit_width}}(value, other.to_{{sign_char.id}}{{bit_width}})
               elsif other.bit_length > {{bit_width}}
                 if other > 0
@@ -40,6 +45,11 @@ module Saline
             {% compatible_bit_length = (type_base == "Int") ? bit_width - 1 : bit_width %}
             {% if T.stringify == "#{type_base.id}#{bit_width}" %}
               if other.bit_length <= {{compatible_bit_length}}
+                {% if type_base == "UInt" %}
+                  if other < 0
+                    return self + other.abs
+                  end
+                {% end %}
                 Saturating({{type_base.id}}{{bit_width}}).new LLVM::LibSaturating.{{sign_char.id}}sub_{{bit_width}}(value, other.to_{{sign_char.id}}{{bit_width}})
               elsif other.bit_length > {{bit_width}}
                 if other > 0

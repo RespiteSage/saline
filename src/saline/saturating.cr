@@ -69,7 +69,7 @@ module Saline
     # Returns the result of multiplying `self` and *other*.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
     def *(other : Number) : Saturating(T)
-      if ((-1..1).includes?(other) || (-1..1).includes?(value) || value <= T::MAX // other)
+      if ((-1..1).includes?(other) || (-1..1).includes?(value) || (other >= T::MIN && value <= T::MAX // other))
         new_value = value * other
         Saturating(T).new(new_value)
       else
