@@ -32,6 +32,13 @@ module Saline
       {% end %}
     end
 
+    # Create a new `Saturating(T)` with the given *value*.
+    #
+    # The value is assumed to be convertible into `T`; if not, an error is raised.
+    def self.new(value) : Saturating(T)
+      new T.new(value)
+    end
+
     # Returns the result of adding `self` and *other*.
     # Returns `T::MAX` or `T::MIN` (as appropriate) in case of overflow.
     def +(other : Number) : Saturating(T)

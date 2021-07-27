@@ -1,7 +1,8 @@
 require "./spec_helper"
 
 SUPPORTED_INTS          = [Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64]
-SUPPORTED_OPERAND_TYPES = [Int8, Int16, Int32, Int64, UInt8, UInt16, UInt32, UInt64]
+SUPPORTED_OPERAND_TYPES = [Int8, Int16, Int32, Int64,
+                           UInt8, UInt16, UInt32, UInt64]
 
 describe Saturating do
   describe ".new" do
@@ -16,7 +17,7 @@ describe Saturating do
   {% for generic_type in SUPPORTED_INTS %}
     describe ".new" do
       it "sets the {{generic_type}} internal value based on the argument" do
-        n = Saturating.new({{generic_type}}.new 7)
+        n = Saturating({{generic_type}}).new 7
 
         n.should eq 7
       end
@@ -79,7 +80,7 @@ describe Saturating do
     {% for operand_type in SUPPORTED_OPERAND_TYPES %}
       describe "#+" do
         it "adds a {{operand_type}} normally to a Saturating({{generic_type}})" do
-          n = Saturating.new({{generic_type}}.new 11)
+          n = Saturating({{generic_type}}).new 11
 
           result = n + {{operand_type}}.new(6)
 
@@ -87,8 +88,8 @@ describe Saturating do
         end
 
         it "adds a Saturating({{operand_type}}) to a Saturating({{generic_type}}) normally" do
-          n = Saturating.new({{generic_type}}.new 19)
-          m = Saturating.new({{operand_type}}.new 4)
+          n = Saturating({{generic_type}}).new 19
+          m = Saturating({{operand_type}}).new 4
 
           result = n + m
 
@@ -98,7 +99,7 @@ describe Saturating do
 
       describe "#-" do
         it "subtracts a {{operand_type}} normally from a Saturating({{generic_type}})" do
-          n = Saturating.new({{generic_type}}.new 11)
+          n = Saturating({{generic_type}}).new 11
 
           result = n - {{operand_type}}.new(4)
 
@@ -106,8 +107,8 @@ describe Saturating do
         end
 
         it "subtracts a Saturating({{operand_type}}) from a  Saturating({{generic_type}}) normally" do
-          n = Saturating.new({{generic_type}}.new 19)
-          m = Saturating.new({{operand_type}}.new 6)
+          n = Saturating({{generic_type}}).new 19
+          m = Saturating({{operand_type}}).new 6
 
           result = n - m
 
@@ -117,7 +118,7 @@ describe Saturating do
 
       describe "#*" do
         it "multiplies a Saturating({{generic_type}}) by a {{operand_type}} normally" do
-          n = Saturating.new({{generic_type}}.new 2)
+          n = Saturating({{generic_type}}).new 2
 
           result = n * {{operand_type}}.new(3)
 
@@ -125,8 +126,8 @@ describe Saturating do
         end
 
         it "multiplies a Saturating({{generic_type}}) a Saturating({{operand_type}}) normally" do
-          n = Saturating.new({{generic_type}}.new 5)
-          m = Saturating.new({{operand_type}}.new 7)
+          n = Saturating({{generic_type}}).new 5
+          m = Saturating({{operand_type}}).new 7
 
           result = n * m
 
@@ -136,43 +137,43 @@ describe Saturating do
 
       describe "#<=>" do
         it "returns 0 when a Saturating({{generic_type}}) equals a {{operand_type}}" do
-          n = Saturating.new({{generic_type}}.new 7)
+          n = Saturating({{generic_type}}).new 7
           m = {{operand_type}}.new 7
 
           (n <=> m).should eq 0
         end
 
         it "returns 0 when a Saturating({{generic_type}}) equals a Saturating({{operand_type}})" do
-          n = Saturating.new({{generic_type}}.new 7)
-          m = Saturating.new({{operand_type}}.new 7)
+          n = Saturating({{generic_type}}).new 7
+          m = Saturating({{operand_type}}).new 7
 
           (n <=> m).should eq 0
         end
 
         it "returns 1 when a Saturating({{generic_type}}) is larger compared with a {{operand_type}}" do
-          n = Saturating.new({{generic_type}}.new 8)
+          n = Saturating({{generic_type}}).new 8
           m = {{operand_type}}.new 7
 
           (n <=> m).should eq 1
         end
 
         it "returns 1 when a Saturating({{generic_type}}) is larger compared with a Saturating({{operand_type}})" do
-          n = Saturating.new({{generic_type}}.new 8)
-          m = Saturating.new({{operand_type}}.new 7)
+          n = Saturating({{generic_type}}).new 8
+          m = Saturating({{operand_type}}).new 7
 
           (n <=> m).should eq 1
         end
 
         it "returns -1 when a Saturating({{generic_type}}) is smaller compared with a {{operand_type}}" do
-          n = Saturating.new({{generic_type}}.new 7)
+          n = Saturating({{generic_type}}).new 7
           m = {{operand_type}}.new 8
 
           (n <=> m).should eq -1
         end
 
         it "returns -1 when a Saturating({{generic_type}}) is smaller compared with a Saturating({{operand_type}})" do
-          n = Saturating.new({{generic_type}}.new 7)
-          m = Saturating.new({{operand_type}}.new 8)
+          n = Saturating({{generic_type}}).new 7
+          m = Saturating({{operand_type}}).new 8
 
           (n <=> m).should eq -1
         end
