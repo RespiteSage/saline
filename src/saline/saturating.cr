@@ -28,8 +28,8 @@ module Saline
     # Create a new `Saturating(T)` with the given *value*.
     def initialize(@value : T)
       {% unless T < Number %}
-      {% raise "The generic type of Saturating must be a Number type!" %}
-    {% end %}
+        {% raise "The generic type of Saturating must be a Number type!" %}
+      {% end %}
     end
 
     # Returns the result of adding `self` and *other*.
@@ -107,17 +107,20 @@ module Saline
       self.value <=> other
     end
 
-    # TODO
+    # Returns true if `self`'s value equals one of its saturation boundaries,
+    # otherwise returns false
     def saturated?
       saturated_to_min? || saturated_to_max?
     end
 
-    # TODO
+    # Returns true if `self`'s value equals its upper saturation boundary,
+    # otherwise returns false
     def saturated_to_max?
       value == T::MAX
     end
 
-    # TODO
+    # Returns true if `self`'s value equals its lower saturation boundary,
+    # otherwise returns false
     def saturated_to_min?
       value == T::MIN
     end
